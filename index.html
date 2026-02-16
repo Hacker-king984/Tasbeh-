@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Islamic Tasbeeh Counter</title>
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Amiri&family=Cairo:wght@700&display=swap');
+
+body{
+  margin:0;
+  font-family:'Cairo',sans-serif;
+  background:url('https://images.unsplash.com/photo-1591604466107-ec97de577aff?auto=format&fit=crop&w=1600&q=80') no-repeat center center fixed;
+  background-size:cover;
+  color:white;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  top:0;left:0;
+  width:100%;height:100%;
+  background:rgba(0,0,0,0.7);
+  z-index:-1;
+}
+
+header{
+  text-align:center;
+  padding:20px;
+  font-size:28px;
+  font-weight:bold;
+  text-shadow:2px 2px 5px black;
+}
+
+#searchBox{
+  text-align:center;
+  margin-bottom:20px;
+}
+
+#searchInput{
+  width:80%;
+  max-width:400px;
+  padding:10px;
+  border:none;
+  border-radius:8px;
+  font-size:16px;
+}
+
+#tasbeehContainer{
+  padding:0 20px 40px 20px;
+}
+
+.tasbeeh{
+  margin-bottom:30px;
+  border-bottom:1px solid rgba(255,255,255,0.3);
+  padding-bottom:15px;
+  text-align:center;
+}
+
+.arabic{
+  font-family:'Amiri',serif;
+  font-size:28px;
+  direction:rtl;
+  color:#ffeb3b;
+  margin-bottom:10px;
+  text-shadow:1px 1px 4px black;
+}
+
+.counter{
+  font-size:22px;
+  margin-bottom:10px;
+}
+
+button{
+  padding:6px 15px;
+  border:none;
+  border-radius:6px;
+  font-weight:bold;
+  cursor:pointer;
+  margin:3px;
+}
+
+.addBtn{
+  background:#00ffcc;
+}
+
+.resetBtn{
+  background:#ff4444;
+  color:white;
+}
+
+footer{
+  text-align:center;
+  padding:20px;
+  font-size:18px;
+  font-weight:bold;
+  color:#ff9800;
+}
+</style>
+</head>
+<body>
+
+<header>Islamic Tasbeeh Counter</header>
+
+<div id="searchBox">
+  <input type="text" id="searchInput" placeholder="Search Tasbeeh...">
+</div>
+
+<div id="tasbeehContainer"></div>
+
+<footer>Created by Muhammad Jameer</footer>
+
+<script>
+
+const tasbeehList = [
+"سُبْحَانَ اللَّهِ",
+"الْحَمْدُ لِلَّهِ",
+"اللَّهُ أَكْبَرُ",
+"أَسْتَغْفِرُ اللَّهَ",
+"لَا إِلٰهَ إِلَّا اللَّهُ",
+"لَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِاللَّهِ",
+"سُبْحَانَ اللَّهِ وَبِحَمْدِهِ",
+"سُبْحَانَ اللَّهِ الْعَظِيمِ",
+"يَا رَحْمَانُ",
+"يَا رَحِيمُ",
+"يَا مَلِكُ",
+"يَا قُدُّوسُ",
+"يَا سَلَامُ",
+"يَا مُؤْمِنُ",
+"يَا مُهَيْمِنُ",
+"يَا عَزِيزُ",
+"يَا جَبَّارُ",
+"يَا مُتَكَبِّرُ",
+"يَا خَالِقُ",
+"يَا بَارِئُ",
+"يَا مُصَوِّرُ",
+"يَا غَفَّارُ",
+"يَا قَهَّارُ",
+"يَا وَهَّابُ",
+"يَا رَزَّاقُ",
+"يَا فَتَّاحُ",
+"يَا عَلِيمُ",
+"يَا قَابِضُ",
+"يَا بَاسِطُ",
+"يَا خَافِضُ",
+"يَا رَافِعُ",
+"يَا مُعِزُّ",
+"يَا مُذِلُّ",
+"يَا سَمِيعُ",
+"يَا بَصِيرُ",
+"يَا حَكَمُ",
+"يَا عَدْلُ",
+"يَا لَطِيفُ",
+"يَا خَبِيرُ",
+"يَا حَلِيمُ",
+"يَا عَظِيمُ",
+"يَا غَفُورُ",
+"يَا شَكُورُ",
+"يَا عَلِيُّ",
+"يَا كَبِيرُ",
+"يَا حَفِيظُ",
+"يَا مُقِيتُ",
+"يَا حَسِيبُ",
+"يَا جَلِيلُ",
+"يَا كَرِيمُ"
+];
+
+const container = document.getElementById("tasbeehContainer");
+const searchInput = document.getElementById("searchInput");
+
+function renderList(list){
+  container.innerHTML="";
+  list.forEach((text,index)=>{
+    let count = localStorage.getItem("count_"+index) 
+                ? parseInt(localStorage.getItem("count_"+index)) 
+                : 0;
+
+    const div=document.createElement("div");
+    div.className="tasbeeh";
+    div.innerHTML=`
+      <div class="arabic">${text}</div>
+      <div class="counter" id="counter_${index}">${count}</div>
+      <button class="addBtn" onclick="increment(${index})">+1</button>
+      <button class="resetBtn" onclick="resetCounter(${index})">Reset</button>
+    `;
+    container.appendChild(div);
+  });
+}
+
+function increment(i){
+  let count = localStorage.getItem("count_"+i) 
+              ? parseInt(localStorage.getItem("count_"+i)) 
+              : 0;
+  count++;
+  localStorage.setItem("count_"+i,count);
+  document.getElementById("counter_"+i).innerText=count;
+}
+
+function resetCounter(i){
+  localStorage.setItem("count_"+i,0);
+  document.getElementById("counter_"+i).innerText=0;
+}
+
+searchInput.addEventListener("input",()=>{
+  const value=searchInput.value;
+  const filtered=tasbeehList.filter(t=>t.includes(value));
+  renderList(filtered);
+});
+
+renderList(tasbeehList);
+
+</script>
+
+</body>
+  </html>
